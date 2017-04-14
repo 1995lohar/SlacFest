@@ -29,7 +29,7 @@ import eu.kudan.kudan.ARView;
 
 public class ARCameraActivity extends ARActivity {
 
-    private ARImageTrackable trackable;
+    private ARImageTrackable trackableApple,trackableBanana,trackableGrapes,trackable;
     ARImageNode imageNode;
     ARModelNode modelNode;
     RelativeLayout relative;
@@ -83,20 +83,29 @@ public class ARCameraActivity extends ARActivity {
         addImageTrackable();
         addImageNode();
         addVideoNode();
-        addAlphaVideoNode();
+//        addAlphaVideoNode();
         addModelNode();
     }
 
     private void addImageTrackable() {
 
         // Initialise image trackable
-        trackable = new ARImageTrackable("lego");
-        trackable.loadFromAsset("RedApple.jpg");
+        trackableApple = new ARImageTrackable("apple");
+        trackableApple.loadFromAsset("RedApple.jpg");
         // Get instance of image tracker manager
         ARImageTracker trackableManager = ARImageTracker.getInstance();
-
         // Add image trackable to image tracker manager
-        trackableManager.addTrackable(trackable);
+        trackableManager.addTrackable(trackableApple);
+
+
+        trackableBanana = new ARImageTrackable("banana");
+        trackableApple.loadFromAsset("banana.jpg");
+        trackableManager.addTrackable(trackableApple);
+
+
+        trackableGrapes = new ARImageTrackable("grapes");
+        trackableApple.loadFromAsset("Grapes.jpg");
+        trackableManager.addTrackable(trackableApple);
     }
 
     private void addModelNode() {
@@ -130,25 +139,25 @@ public class ARCameraActivity extends ARActivity {
 
     }
 
-    private void addAlphaVideoNode() {
-
-        // Initialise video texture
-        ARVideoTexture videoTexture = new ARVideoTexture();
-        videoTexture.loadFromAsset("kaboom.mp4");
-
-        // Initialise alpha video node with video texture
-        ARAlphaVideoNode alphaVideoNode = new ARAlphaVideoNode(videoTexture);
-
-        // Add alpha video node to image trackable
-        trackable.getWorld().addChild(alphaVideoNode);
-
-        // Alpha video scale
-        float scale = trackable.getWidth() / videoTexture.getWidth();
-        alphaVideoNode.scaleByUniform(scale);
-
-        alphaVideoNode.setVisible(false);
-
-    }
+//    private void addAlphaVideoNode() {
+//
+//        // Initialise video texture
+//        ARVideoTexture videoTexture = new ARVideoTexture();
+//        videoTexture.loadFromAsset("kaboom.mp4");
+//
+//        // Initialise alpha video node with video texture
+//        ARAlphaVideoNode alphaVideoNode = new ARAlphaVideoNode(videoTexture);
+//
+//        // Add alpha video node to image trackable
+//        trackable.getWorld().addChild(alphaVideoNode);
+//
+//        // Alpha video scale
+//        float scale = trackable.getWidth() / videoTexture.getWidth();
+//        alphaVideoNode.scaleByUniform(scale);
+//
+//        alphaVideoNode.setVisible(false);
+//
+//    }
 
     private void addVideoNode() {
 
@@ -172,45 +181,48 @@ public class ARCameraActivity extends ARActivity {
 
     private void addImageNode() {
 
-        // Initialise image node
-
         imageNode = new ARImageNode("transparent-yes.png");
-
-        // Add image node to image trackable
-        trackable.getWorld().addChild(imageNode);
-
-        // Image scale
+        trackableApple.getWorld().addChild(imageNode);
         ARTextureMaterial textureMaterial = (ARTextureMaterial)imageNode.getMaterial();
-        float scale = trackable.getWidth() / textureMaterial.getTexture().getWidth();
+        float scale = trackableApple.getWidth() / textureMaterial.getTexture().getWidth();
         imageNode.scaleByUniform(scale);
+        imageNode.setVisible(false);
 
+        imageNode = new ARImageNode("transparent-no.png");
+        trackableBanana.getWorld().addChild(imageNode);
+        scale = trackableBanana.getWidth() / textureMaterial.getTexture().getWidth();
+        imageNode.scaleByUniform(scale);
+        imageNode.setVisible(false);
 
-        // Hide image node
+        imageNode = new ARImageNode("transparent-no.png");
+        trackableGrapes.getWorld().addChild(imageNode);
+        scale = trackableGrapes.getWidth() / textureMaterial.getTexture().getWidth();
+        imageNode.scaleByUniform(scale);
         imageNode.setVisible(false);
 
     }
 
 
-    public void addModelButtonPressed(View view) {
+    public void addModelButtonPressed() {
 
         hideAll();
         trackable.getWorld().getChildren().get(3).setVisible(true);
     }
 
-    public void addAlphaButtonPressed(View view) {
+    public void addAlphaButtonPressed() {
 
         hideAll();
         trackable.getWorld().getChildren().get(2).setVisible(true);
 
     }
 
-    public void addVideoButtonPressed(View view) {
+    public void addVideoButtonPressed() {
 
         hideAll();
         trackable.getWorld().getChildren().get(1).setVisible(true);
     }
 
-    public void addImageButtonPressed(View view) {
+    public void addImageButtonPressed() {
         hideAll();
         trackable.getWorld().getChildren().get(0).setVisible(true);
     }

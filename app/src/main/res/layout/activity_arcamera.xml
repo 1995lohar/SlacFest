@@ -20,7 +20,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <Button
+<!--        <Button
             android:layout_width="82dp"
             android:layout_height="62dp"
             android:text="View Image"
@@ -49,6 +49,6 @@
             android:text="View Model"
             android:onClick="addModelButtonPressed"
             android:id="@+id/ModelButton"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom" />-->
     </LinearLayout>
 </RelativeLayout>
