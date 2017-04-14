@@ -91,8 +91,7 @@ public class ARCameraActivity extends ARActivity {
 
         // Initialise image trackable
         trackable = new ARImageTrackable("lego");
-        trackable.loadFromAsset("Symbol.png");
-
+        trackable.loadFromAsset("RedApple.jpg");
         // Get instance of image tracker manager
         ARImageTracker trackableManager = ARImageTracker.getInstance();
 
@@ -175,7 +174,7 @@ public class ARCameraActivity extends ARActivity {
 
         // Initialise image node
 
-        imageNode = new ARImageNode("eyebrow.png");
+        imageNode = new ARImageNode("transparent-yes.png");
 
         // Add image node to image trackable
         trackable.getWorld().addChild(imageNode);
