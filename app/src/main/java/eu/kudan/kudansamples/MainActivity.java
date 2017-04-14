@@ -72,9 +72,27 @@ public class MainActivity extends AppCompatActivity {
         noInternet.show();
     }
 
+    public void human(View view) {
+        Intent intent= new Intent(MainActivity.this,ARCameraActivity.class);
+        intent.putExtra("value",0);
+        startActivity(intent);
+    }
 
-    public void startARActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, ARCameraActivity.class);
+    public void social(View view) {
+        Intent intent= new Intent(MainActivity.this,ARCameraActivity.class);
+        intent.putExtra("value",1);
+        startActivity(intent);
+    }
+
+    public void alignment(View view) {
+        Intent intent= new Intent(MainActivity.this,ARCameraActivity.class);
+        intent.putExtra("value",2);
+        startActivity(intent);
+    }
+
+    public void selection(View view) {
+        Intent intent= new Intent(MainActivity.this,ARCameraActivity.class);
+        intent.putExtra("value",3);
         startActivity(intent);
     }
 }
