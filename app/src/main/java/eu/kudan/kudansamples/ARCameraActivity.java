@@ -2,7 +2,10 @@ package eu.kudan.kudansamples;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 
@@ -27,11 +30,53 @@ import eu.kudan.kudan.ARView;
 public class ARCameraActivity extends ARActivity {
 
     private ARImageTrackable trackable;
+    ARImageNode imageNode;
+    ARModelNode modelNode;
+    RelativeLayout relative;
+    float dX,dY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arcamera);
+       relative= (RelativeLayout) findViewById(R.id.relativeLayout);
+
+        relative.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+
+
+                        float newX = event.getRawX() + dX;
+                        float newY= event.getRawY() + dY;
+                        rotate(newX,newY);
+
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+
+
+
+    }
+
+    private void rotate(float newX, float newY) {
+
+        imageNode.rotateByDegrees(newY/10,1,0,0);
+        imageNode.rotateByDegrees(newX/10,0,1,0);
+        modelNode.rotateByDegrees(newY/10,1,0,0);
+        modelNode.rotateByDegrees(newX/10,0,1,0);
     }
 
     public void setup() {
@@ -46,7 +91,7 @@ public class ARCameraActivity extends ARActivity {
 
         // Initialise image trackable
         trackable = new ARImageTrackable("lego");
-        trackable.loadFromAsset("lego.jpg");
+        trackable.loadFromAsset("Symbol.png");
 
         // Get instance of image tracker manager
         ARImageTracker trackableManager = ARImageTracker.getInstance();
@@ -59,7 +104,8 @@ public class ARCameraActivity extends ARActivity {
         // Import model
         ARModelImporter modelImporter = new ARModelImporter();
         modelImporter.loadFromAsset("ben.jet");
-        ARModelNode modelNode = (ARModelNode)modelImporter.getNode();
+        modelNode = (ARModelNode)modelImporter.getNode();
+
 
         // Load model texture
         ARTexture2D texture2D = new ARTexture2D();
@@ -128,7 +174,8 @@ public class ARCameraActivity extends ARActivity {
     private void addImageNode() {
 
         // Initialise image node
-        ARImageNode imageNode = new ARImageNode("eyebrow.png");
+
+        imageNode = new ARImageNode("eyebrow.png");
 
         // Add image node to image trackable
         trackable.getWorld().addChild(imageNode);
@@ -137,6 +184,7 @@ public class ARCameraActivity extends ARActivity {
         ARTextureMaterial textureMaterial = (ARTextureMaterial)imageNode.getMaterial();
         float scale = trackable.getWidth() / textureMaterial.getTexture().getWidth();
         imageNode.scaleByUniform(scale);
+
 
         // Hide image node
         imageNode.setVisible(false);
