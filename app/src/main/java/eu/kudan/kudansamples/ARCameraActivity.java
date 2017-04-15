@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jme3.math.Quaternion;
 
 import eu.kudan.kudan.ARActivity;
+import eu.kudan.kudan.ARArbiTrack;
+import eu.kudan.kudan.ARGyroPlaceManager;
 import eu.kudan.kudan.ARImageNode;
 import eu.kudan.kudan.ARImageTrackable;
 import eu.kudan.kudan.ARImageTracker;
@@ -33,12 +37,16 @@ public class ARCameraActivity extends ARActivity {
     RelativeLayout relative;
     float dX, dY;
     int val;
+    Button flowerBtn;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arcamera);
         relative = (RelativeLayout) findViewById(R.id.relativeLayout);
+        flowerBtn = (Button) findViewById(R.id.FlowerButton);
+        textView = (TextView) findViewById(R.id.textView7);
 
         relative.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -68,7 +76,26 @@ public class ARCameraActivity extends ARActivity {
 
         Intent intent = getIntent();
         val = intent.getIntExtra("value", -1);
-
+        switch (val){
+            case 0:
+                textView.setText("Point the camera at the object to get the 360 view 3D figure. Have fun playing with it!");
+                break;
+            case 1:
+                textView.setText("Point the camera at the picture to get the actual interaction in motion");
+                break;
+            case 2:
+                textView.setText("Align the object properly as shown in the figure ");
+                break;
+            case 3:
+                textView.setText("Select the \" Apple \" from the pictures of fruits given");
+                break;
+        }
+        if (val == 4) {
+            arbitrack_state = ARBITRACK_STATE.ARBI_PLACEMENT;
+            flowerBtn.setVisibility(View.VISIBLE);
+        } else {
+            flowerBtn.setVisibility(View.GONE);
+        }
 
     }
 
@@ -76,16 +103,16 @@ public class ARCameraActivity extends ARActivity {
 
 //        imageNode.rotateByDegrees(newY / 10, 1, 0, 0);
 //        imageNode.rotateByDegrees(newX / 10, 0, 1, 0);
-        if (val==0) {
+        if (val == 0) {
             modelNode1.rotateByDegrees(newY / 10, 1, 0, 0);
             modelNode2.rotateByDegrees(newY / 10, 1, 0, 0);
             modelNode1.rotateByDegrees(newX / 10, 0, 1, 0);
             modelNode2.rotateByDegrees(newX / 10, 0, 1, 0);
-        } else if (val == 2){
+        } else if (val == 2) {
             modelNode3.rotateByDegrees(newY / 10, 1, 0, 0);
             modelNode3.rotateByDegrees(newX / 10, 0, 1, 0);
             Quaternion q = modelNode3.getOrientation();
-            Log.d("TAG", "x:"+q.getX()+" y:"+q.getY()+" z:"+q.getZ());
+            Log.d("TAG", "x:" + q.getX() + " y:" + q.getY() + " z:" + q.getZ());
 //            Log.d("TAG", (newX/10)+":"+(newY/10));
         }
 
@@ -96,6 +123,8 @@ public class ARCameraActivity extends ARActivity {
         addImageNode();
         addVideoNode();
         addModelNode();
+        if (val == 4)
+            setupArbiTrack();
     }
 
     private void addImageTrackable() {
@@ -194,7 +223,7 @@ public class ARCameraActivity extends ARActivity {
         modelNode3.scaleByUniform(500.25f);
         trackableCar.getWorld().addChild(modelNode3);
 //        if (val == 2)
-            modelNode3.setVisible(true);
+        modelNode3.setVisible(true);
 //        else
 //            modelNode3.setVisible(false);
 
@@ -273,29 +302,33 @@ public class ARCameraActivity extends ARActivity {
 
     }
 
+    public void setupArbiTrack() {
 
-    public void addModelButtonPressed() {
+        // Create an image node to be used as a target node
+        ARImageNode targetImageNode = new ARImageNode("flower.png");
 
-        hideAll();
-//        trackable.getWorld().getChildren().get(3).setVisible(true);
-    }
+        // Scale and rotate the image to the correct transformation.
+        targetImageNode.scaleByUniform(0.25f);
+        targetImageNode.rotateByDegrees(90, 0, 1, 0);
 
-    public void addAlphaButtonPressed() {
+        // Initialise gyro placement. Gyro placement positions content on a virtual floor plane where the device is aiming.
+        ARGyroPlaceManager gyroPlaceManager = ARGyroPlaceManager.getInstance();
+        gyroPlaceManager.initialise();
 
-        hideAll();
-//        trackable.getWorld().getChildren().get(2).setVisible(true);
+        // Add target node to gyro place manager
+        gyroPlaceManager.getWorld().addChild(targetImageNode);
 
-    }
+        // Initialise the arbiTracker
+        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+        arbiTrack.initialise();
 
-    public void addVideoButtonPressed() {
+        // Set the arbiTracker target node to the node moved by the user.
+        arbiTrack.setTargetNode(targetImageNode);
 
-        hideAll();
-//        trackable.getWorld().getChildren().get(1).setVisible(true);
-    }
+        ARImageNode imageNodeFlower = new ARImageNode("flower.png");
 
-    public void addImageButtonPressed() {
-        hideAll();
-//        trackable.getWorld().getChildren().get(0).setVisible(true);
+        // Add model node to world
+        arbiTrack.getWorld().addChild(imageNodeFlower);
     }
 
 
@@ -304,5 +337,47 @@ public class ARCameraActivity extends ARActivity {
 //        for (ARNode node : nodes) {
 //            node.setVisible(false);
 //        }
+    }
+
+    //Tracking enum
+    enum ARBITRACK_STATE {
+        ARBI_PLACEMENT,
+        ARBI_TRACKING
+    }
+
+
+    private ARBITRACK_STATE arbitrack_state;
+
+    public void plantFlower(View view) {
+
+        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+
+        // If in placement mode start arbi track, hide target node and alter label
+        if (arbitrack_state.equals(ARBITRACK_STATE.ARBI_PLACEMENT)) {
+
+            //Start Arbi Track
+            arbiTrack.start();
+
+            //Hide target node
+            arbiTrack.getTargetNode().setVisible(false);
+            arbiTrack.getWorld();
+            //Change enum and label to reflect Arbi Track state
+            arbitrack_state = ARBITRACK_STATE.ARBI_TRACKING;
+        }
+
+        // If tracking stop tracking, show target node and alter label
+        else {
+
+            // Stop Arbi Track
+            arbiTrack.stop();
+
+            // Display target node
+            arbiTrack.getTargetNode().setVisible(true);
+
+            //Change enum and label to reflect Arbi Track state
+            arbitrack_state = ARBITRACK_STATE.ARBI_PLACEMENT;
+
+        }
+
     }
 }

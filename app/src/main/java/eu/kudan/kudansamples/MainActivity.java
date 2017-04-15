@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void flower(View view) {
+        intent.putExtra("value",4);
+        startActivity(intent);
         String toSpeak = "You have chosen to plant a flower ";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
