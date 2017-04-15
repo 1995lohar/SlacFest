@@ -4,9 +4,12 @@ package eu.kudan.kudansamples;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.jme3.math.Quaternion;
 
 import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARImageNode;
@@ -25,7 +28,7 @@ public class ARCameraActivity extends ARActivity {
 
     private ARImageTrackable trackableApple, trackableBanana, trackableGrapes, trackableBrain, trackableSkeleton, trackableHandshake, trackableCar, trackableRoadcross;
     ARImageNode imageNode;
-    ARModelNode modelNode;
+    ARModelNode modelNode1, modelNode2, modelNode3;
     ARVideoNode videoNode1, videoNode2;
     RelativeLayout relative;
     float dX, dY;
@@ -71,18 +74,28 @@ public class ARCameraActivity extends ARActivity {
 
     private void rotate(float newX, float newY) {
 
-        imageNode.rotateByDegrees(newY / 10, 1, 0, 0);
-        imageNode.rotateByDegrees(newX / 10, 0, 1, 0);
-        modelNode.rotateByDegrees(newY / 10, 1, 0, 0);
-        modelNode.rotateByDegrees(newX / 10, 0, 1, 0);
+//        imageNode.rotateByDegrees(newY / 10, 1, 0, 0);
+//        imageNode.rotateByDegrees(newX / 10, 0, 1, 0);
+        if (val==0) {
+            modelNode1.rotateByDegrees(newY / 10, 1, 0, 0);
+            modelNode2.rotateByDegrees(newY / 10, 1, 0, 0);
+            modelNode1.rotateByDegrees(newX / 10, 0, 1, 0);
+            modelNode2.rotateByDegrees(newX / 10, 0, 1, 0);
+        } else if (val == 2){
+            modelNode3.rotateByDegrees(newY / 10, 1, 0, 0);
+            modelNode3.rotateByDegrees(newX / 10, 0, 1, 0);
+            Quaternion q = modelNode3.getOrientation();
+            Log.d("TAG", "x:"+q.getX()+" y:"+q.getY()+" z:"+q.getZ());
+//            Log.d("TAG", (newX/10)+":"+(newY/10));
+        }
+
     }
 
     public void setup() {
         addImageTrackable();
         addImageNode();
         addVideoNode();
-//        addAlphaVideoNode();
-//        addModelNode();
+        addModelNode();
     }
 
     private void addImageTrackable() {
@@ -125,33 +138,66 @@ public class ARCameraActivity extends ARActivity {
     }
 
     private void addModelNode() {
-        // Import model
-        ARModelImporter modelImporter = new ARModelImporter();
-        modelImporter.loadFromAsset("ben.jet");
-        modelNode = (ARModelNode) modelImporter.getNode();
 
+        ARModelImporter modelImporter1 = new ARModelImporter();
+        modelImporter1.loadFromAsset("brain.jet");
+        modelNode1 = modelImporter1.getNode();
+        ARTexture2D texture2D1 = new ARTexture2D();
+        texture2D1.loadFromAsset("brain.jpg");
+        ARLightMaterial material1 = new ARLightMaterial();
+        material1.setTexture(texture2D1);
+        material1.setAmbient(0.8f, 0.8f, 0.8f);
+        for (ARMeshNode meshNode : modelImporter1.getMeshNodes()) {
+            meshNode.setMaterial(material1);
+        }
+        modelNode1.rotateByDegrees(90, 1, 0, 0);
+        modelNode1.scaleByUniform(500.25f);
+        trackableBrain.getWorld().addChild(modelNode1);
 
-        // Load model texture
-        ARTexture2D texture2D = new ARTexture2D();
-        texture2D.loadFromAsset("bigBenTexture.png");
+        ARModelImporter modelImporter2 = new ARModelImporter();
+        modelImporter2.loadFromAsset("skeleton.jet");
+        modelNode2 = modelImporter2.getNode();
+        ARTexture2D texture2D2 = new ARTexture2D();
+        texture2D2.loadFromAsset("skeleton.jpg");
+        ARLightMaterial material2 = new ARLightMaterial();
+        material2.setTexture(texture2D2);
+        material2.setAmbient(0.8f, 0.8f, 0.8f);
+        for (ARMeshNode meshNode : modelImporter2.getMeshNodes()) {
+            meshNode.setMaterial(material2);
+        }
+        modelNode2.rotateByDegrees(90, 1, 0, 0);
+        modelNode2.scaleByUniform(25.25f);
+        trackableSkeleton.getWorld().addChild(modelNode2);
 
-        // Apply model texture to model texture material
-        ARLightMaterial material = new ARLightMaterial();
-        material.setTexture(texture2D);
-        material.setAmbient(0.8f, 0.8f, 0.8f);
-
-        // Apply texture material to models mesh nodes
-        for (ARMeshNode meshNode : modelImporter.getMeshNodes()) {
-            meshNode.setMaterial(material);
+        if (val == 0) {
+            modelNode1.setVisible(true);
+            modelNode2.setVisible(true);
+        } else {
+            modelNode1.setVisible(false);
+            modelNode2.setVisible(false);
         }
 
 
-        modelNode.rotateByDegrees(90, 1, 0, 0);
-        modelNode.scaleByUniform(0.25f);
+        ARModelImporter modelImporter3 = new ARModelImporter();
+        modelImporter3.loadFromAsset("car.jet");
+        modelNode3 = modelImporter3.getNode();
+        ARTexture2D texture2D3 = new ARTexture2D();
+        texture2D3.loadFromAsset("car.png");
+        ARLightMaterial material3 = new ARLightMaterial();
+        material3.setTexture(texture2D3);
+        material3.setAmbient(0.8f, 0.8f, 0.8f);
+        for (ARMeshNode meshNode : modelImporter3.getMeshNodes()) {
+            meshNode.setMaterial(material3);
+        }
+        modelNode3.rotateByDegrees(90, 0, 1, 0);
+        modelNode3.rotateByDegrees(180, 1, 0, 0);
+        modelNode3.scaleByUniform(500.25f);
+        trackableCar.getWorld().addChild(modelNode3);
+//        if (val == 2)
+            modelNode3.setVisible(true);
+//        else
+//            modelNode3.setVisible(false);
 
-        // Add model node to image trackable
-//        trackable.getWorld().addChild(modelNode);
-        modelNode.setVisible(true);
 
     }
 
