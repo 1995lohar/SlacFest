@@ -62,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng other3 = new LatLng(12.9709207,77.5853267);
         mMap.addMarker(new MarkerOptions().position(other3).title("Other Flower"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+
     }
 }
