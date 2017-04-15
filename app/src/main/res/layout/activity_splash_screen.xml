@@ -17,6 +17,6 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_alignParentEnd="true"
 
         android:layout_alignParentRight="true"
-        android:src="@drawable/brain" />
+        android:src="@drawable/autism" />
 
 </RelativeLayout>

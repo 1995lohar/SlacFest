@@ -12,51 +12,24 @@
     tools:context="eu.kudan.kudansamples.MainActivity">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="46dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="60dp"
-        android:onClick="human"
-        android:src="@drawable/body" />
-
-    <ImageView
         android:id="@+id/imageView4"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginEnd="37dp"
         android:layout_marginRight="37dp"
         android:onClick="selection"
-        android:src="@drawable/selection"
+        android:src="@drawable/fruitimg"
         android:layout_below="@+id/imageView6"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="51dp" />
 
     <ImageView
-        android:id="@+id/imageView5"
-        android:onClick="alignment"
-        android:src="@drawable/images"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView"
-        android:layout_marginTop="98dp"
-        android:layout_alignBottom="@+id/imageView4"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView" />
-
-    <ImageView
         android:id="@+id/imageView6"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:onClick="social"
-        android:src="@drawable/si"
+        android:src="@drawable/social"
         android:layout_marginTop="44dp"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/imageView4"
@@ -65,23 +38,113 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/body"
-        android:id="@+id/imageView3"
-        android:onClick="flower"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/imageView5"
-        android:layout_alignStart="@+id/imageView5"
-        android:layout_marginBottom="57dp" />
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/body"
+        android:src="@drawable/chatbot"
         android:id="@+id/imageView7"
         android:onClick="bot"
         android:layout_alignBottom="@+id/imageView3"
         android:layout_alignLeft="@+id/imageView4"
         android:layout_alignStart="@+id/imageView4"
         android:layout_marginBottom="10dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="49dp"
+        android:layout_marginStart="49dp"
+        android:onClick="human"
+        android:src="@drawable/humans"
+        android:layout_alignTop="@+id/imageView6"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:onClick="alignment"
+        android:src="@drawable/ppp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignTop="@+id/imageView4"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/newflower"
+        android:id="@+id/imageView3"
+        android:onClick="flower"
+        android:layout_below="@+id/imageView5"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="23dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="80dp" />
+
+    <TextView
+        android:text="Human organs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:id="@+id/textView"
+        android:textSize="14sp"
+        android:layout_below="@+id/imageView"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
+
+    <TextView
+        android:text="Align game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:textSize="14sp"
+        android:layout_below="@+id/imageView5"
+        android:layout_alignLeft="@+id/imageView5"
+        android:layout_alignStart="@+id/imageView5"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:text="Plant a flower"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView3"
+        android:layout_alignRight="@+id/textView3"
+        android:layout_alignEnd="@+id/textView3"
+        android:layout_marginTop="32dp"
+        android:id="@+id/textView5"
+        android:textSize="14sp" />
+
+    <TextView
+        android:text="convo buddy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView6"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/textView5"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignRight="@+id/imageView7"
+        android:layout_alignEnd="@+id/imageView7" />
+
+    <TextView
+        android:text="Social Interaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/textView"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignRight="@+id/imageView4"
+        android:layout_alignEnd="@+id/imageView4" />
+
+    <TextView
+        android:text="match the object"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignLeft="@+id/imageView4"
+        android:layout_alignStart="@+id/imageView4" />
 
 </RelativeLayout>
