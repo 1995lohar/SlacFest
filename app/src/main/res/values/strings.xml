@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JhilMil AR</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

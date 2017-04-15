@@ -94,40 +94,40 @@ public class MainActivity extends AppCompatActivity {
     public void human(View view) {
         intent.putExtra("value",0);
         startActivity(intent);
-        String toSpeak = "You have chosen to learn about organs ";
+        String toSpeak = "Lets learn more about our organs!";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void social(View view) {
         intent.putExtra("value",1);
         startActivity(intent);
-        String toSpeak = "You have chosen to learn about social Interaction ";
+        String toSpeak = "Lets see and learn about social interaction";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void alignment(View view) {
         intent.putExtra("value",2);
         startActivity(intent);
-        String toSpeak = "You have chosen to learn about how to align flipped things  ";
+        String toSpeak = "Lets align some toys";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void selection(View view) {
         intent.putExtra("value",3);
         startActivity(intent);
-        String toSpeak = "You have chosen to learn about selecting correct items ";
+        String toSpeak = "Lets learn to recognise some fruits ";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void flower(View view) {
         intent.putExtra("value",4);
         startActivity(intent);
-        String toSpeak = "You have chosen to plant a flower ";
+        String toSpeak = "Lets plant some flowers ";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void bot(View view) {
-        String toSpeak = "welcome to bot ";
+        String toSpeak = "Lets learn to chat with a friend";
         t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
         String url = "https://www.messenger.com/t/1776380269283302";
         Intent i = new Intent(Intent.ACTION_VIEW);

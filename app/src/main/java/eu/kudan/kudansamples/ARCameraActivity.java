@@ -2,8 +2,12 @@ package eu.kudan.kudansamples;
 
 //import android.support.v7.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +15,12 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.jme3.math.Quaternion;
 
 import eu.kudan.kudan.ARActivity;
@@ -28,17 +38,29 @@ import eu.kudan.kudan.ARTextureMaterial;
 import eu.kudan.kudan.ARVideoNode;
 import eu.kudan.kudan.ARVideoTexture;
 
-public class ARCameraActivity extends ARActivity {
+public class ARCameraActivity extends ARActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+
+    //Tracking enum
+    enum ARBITRACK_STATE {
+        ARBI_PLACEMENT,
+        ARBI_TRACKING
+    }
 
     private ARImageTrackable trackableApple, trackableBanana, trackableGrapes, trackableBrain, trackableSkeleton, trackableHandshake, trackableCar, trackableRoadcross;
     ARImageNode imageNode;
     ARModelNode modelNode1, modelNode2, modelNode3;
     ARVideoNode videoNode1, videoNode2;
     RelativeLayout relative;
+    private ARBITRACK_STATE arbitrack_state;
     float dX, dY;
     int val;
     Button flowerBtn;
     TextView textView;
+    LocationRequest locationRequest;
+    GoogleApiClient googleApiClient;
+    double lat, lon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +69,8 @@ public class ARCameraActivity extends ARActivity {
         relative = (RelativeLayout) findViewById(R.id.relativeLayout);
         flowerBtn = (Button) findViewById(R.id.FlowerButton);
         textView = (TextView) findViewById(R.id.textView7);
+
+        connectToApi();
 
         relative.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -76,7 +100,7 @@ public class ARCameraActivity extends ARActivity {
 
         Intent intent = getIntent();
         val = intent.getIntExtra("value", -1);
-        switch (val){
+        switch (val) {
             case 0:
                 textView.setText("Point the camera at the object to get the 360 view 3D figure. Have fun playing with it!");
                 break;
@@ -339,14 +363,6 @@ public class ARCameraActivity extends ARActivity {
 //        }
     }
 
-    //Tracking enum
-    enum ARBITRACK_STATE {
-        ARBI_PLACEMENT,
-        ARBI_TRACKING
-    }
-
-
-    private ARBITRACK_STATE arbitrack_state;
 
     public void plantFlower(View view) {
 
@@ -363,21 +379,96 @@ public class ARCameraActivity extends ARActivity {
             arbiTrack.getWorld();
             //Change enum and label to reflect Arbi Track state
             arbitrack_state = ARBITRACK_STATE.ARBI_TRACKING;
+            flowerBtn.setText("View other flowers");
         }
 
         // If tracking stop tracking, show target node and alter label
         else {
 
-            // Stop Arbi Track
-            arbiTrack.stop();
+            Intent intent = new Intent(ARCameraActivity.this, MapsActivity.class);
+            Log.d("TAG", "plantFlower: "+lat+": "+lon);
+            intent.putExtra("lat", (double) lat);
+            intent.putExtra("lon", (double) lon);
+            startActivity(intent);
 
-            // Display target node
-            arbiTrack.getTargetNode().setVisible(true);
-
-            //Change enum and label to reflect Arbi Track state
-            arbitrack_state = ARBITRACK_STATE.ARBI_PLACEMENT;
+//            // Stop Arbi Track
+//            arbiTrack.stop();
+//
+//            // Display target node
+//            arbiTrack.getTargetNode().setVisible(true);
+//
+//            //Change enum and label to reflect Arbi Track state
+//            arbitrack_state = ARBITRACK_STATE.ARBI_PLACEMENT;
 
         }
 
     }
+
+    public void connectToApi() {
+        if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+
+            if (!googleApiClient.isConnected() || !googleApiClient.isConnecting()) {
+                googleApiClient.connect();
+                Log.d("TAG", "connect");
+            }
+        } else {
+            Log.e("TAG", "unable to connect to google play services.");
+        }
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(1000); // milliseconds
+        locationRequest.setFastestInterval(1000); // the fastest rate in milliseconds at which your app can handle location updates
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        getLocation();
+
+    }
+
+    private void getLocation() {
+        // shows an error but works if this permission check is not added.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        // here you get the location with location service/gps is on
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                googleApiClient, locationRequest, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        lat = location.getLatitude();
+                        lon = location.getLongitude();
+
+
+//                        textView.setText("Latitude:" + lat + "\nLongitude:" + lon + "\nAddress:" + fullAddress);
+
+                    }
+                });
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+
 }
